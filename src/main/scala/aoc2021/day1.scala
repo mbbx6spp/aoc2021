@@ -8,9 +8,7 @@ import fs2._
 import fs2.io.file.{Files, Path}
 import scala.util.Try
 
-case class State(previous: Option[Int], increaseCount: Int) {
-  def isEmpty: Boolean = previous.fold(increaseCount == 0)(_ => false)
-}
+case class State(previous: Option[Int], increaseCount: Int)
 object State {
   def empty: State = State(None, 0)
 }
@@ -33,12 +31,12 @@ object Day1 extends IOApp.Simple {
       .through(text.lines)
       .map((s: String) => Try(s.toInt).toEither)
       .sliding(n)
-      .fold(State(None, 0))((state, chunk) => chunk.toList.sequence.map(_.sum).fold(foldFailure, foldSuccess(_)(state)))
+      .fold(State.empty)((state, chunk) => chunk.toList.sequence.map(_.sum).fold(foldFailure, foldSuccess(_)(state)))
       .evalMap((line: State) => IO.println(line))
       .compile
       .drain
 
   def part1 = solution(1)
   def part2 = solution(3)
-  def run = part2
+  def run   = part2
 }
