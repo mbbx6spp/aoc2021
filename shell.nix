@@ -5,6 +5,7 @@ let
   inherit (pkgs) mkShell;
 in mkShell {
   buildInputs = with pkgs; [
+    openjdk11
     scala
     sbt
     sbt-extras

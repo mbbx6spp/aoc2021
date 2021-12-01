@@ -1,3 +1,4 @@
+
 image:
   file: .gitpod.Dockerfile
 tasks:
@@ -16,3 +17,8 @@ github:
     addCheck: true
     addBadge: true
     addLabel: true
+
+vscode:
+  extensions:
+    - github.vscode-pull-request-github
+    - eamodio.gitlens
