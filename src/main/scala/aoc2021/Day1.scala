@@ -24,7 +24,7 @@ object Day1 extends IOApp.Simple {
   
   def foldFailure(err: Throwable): State = State.empty
 
-  def solution(input: Stream[IO, String], n: Int) = 
+  def solution(input: Stream[IO, String])(n: Int) = 
     Files[IO]
       .readAll(Path("./data/day1part1"))
       .through(text.utf8.decode)
@@ -35,7 +35,11 @@ object Day1 extends IOApp.Simple {
       .evalMap((state: State) => IO.println(state.increaseCount))
 
   def fromFile(filename: String) = Files[IO].readAll(Path(filename)).through(text.utf8.decode)
-  def part1 = solution(fromFile("./data/day1part1"), 1)
-  def part2 = solution(fromFile("./data/day1part1"), 3)
-  def run   = (Stream.eval(IO.print("Running part1:\n>>> ")) ++ part1 ++ Stream.eval(IO.print("Running part2:\n>>> ")) ++ part2).compile.drain
+  def part1 = solution(fromFile("./data/day1part1"))(1)
+  def part2 = solution(fromFile("./data/day1part1"))(3)
+  def run   = (Stream.eval(IO.print("part1 solution: "))
+    ++ part1
+    ++ Stream.eval(IO.print("part2 solution: "))
+    ++ part2
+  ).compile.drain
 }
