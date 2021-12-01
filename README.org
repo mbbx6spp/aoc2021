@@ -1,5 +1,37 @@
 * Advent of Code 2021
 
-This is a repository containing Scala and specifically FS2 solutions to Avent of Code 2021 problems so that I can learn FS2 more deeply and show its utility.
+** Purpose
 
-- [[./src/main/scala/aoc2021/Day1.scala][Day1 solution]]
+This is a repository containing Scala and specifically FS2 solutions to the Avent of Code 2021 problems so that I can learn FS2 more deeply and show its utility for all kinds of problems, not just inherently "streaming" problems.
+
+** Solutions
+
+- [[./src/main/scala/aoc2021/Day1.scala][Day1 "Sonar Sweep" solution]]
+
+** Prerequisites & Bootstrapping
+
+To run the solutions I recommend using the Nix shell with direnv or Gitpod configuration files in the repository to bootstrap the development environment dependencies.
+
+If you do not wish to use Nix or Gitpod integrations in the repository you will need to install the following on your development system:
+- Scala 2.13.7
+- SBT 1.5.5
+- [Open]JDK 11 (or 17)
+- Bloop (recommended)
+- Coursier (helpful for metals setup)
+- Metals (recommended)
+
+** Running Solutions
+
+Assuming you have the prerequisites and boostrapped via Nix or Gitpod or manually bootstrapped yourself on your own, then you can run the following:
+
+#+begin_src text
+$ sbt run
+#+end_src
+
+Then choose the Main file you want to run if you are given an option. If you aren't then you are probably running when only Day1 solution is available and that is running by default (because there aren't multiple options).
+
+** Running Testing
+
+#+begin_src text
+$ sbt test
+#+end_src
