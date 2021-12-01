@@ -23,3 +23,5 @@ vscode:
     - github.vscode-pull-request-github
     - eamodio.gitlens
     - scala-lang.scala
+    - ms-azuretools.vscode-docker
+    - jnoortheen.nix-ide
