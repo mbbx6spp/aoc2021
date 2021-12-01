@@ -22,3 +22,4 @@ vscode:
   extensions:
     - github.vscode-pull-request-github
     - eamodio.gitlens
+    - scala-lang.scala
