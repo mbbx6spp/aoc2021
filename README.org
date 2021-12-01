@@ -1,0 +1,5 @@
+* Advent of Code 2021
+
+This is a repository containing Scala and specifically FS2 solutions to Avent of Code 2021 problems so that I can learn FS2 more deeply and show its utility.
+
+* [[./src/main/scala/aoc2021/Day1.scala][Day1 solution]]
