@@ -1,10 +1,12 @@
 package aoc2021
 
-import cats._
-import cats.syntax._
-import cats.implicits._
-import cats.effect.{IO, IOApp}
+import cats.data._
+import cats.syntax.all._
+import cats.effect.{IO, IOApp, Concurrent}
+import cats.effect.std.Console
+
 import fs2._
+import fs2.io._
 import fs2.io.file.{Files, Path}
 import scala.util.Try
 
@@ -14,32 +16,28 @@ object State {
 }
 
 object Day1 extends IOApp.Simple {
-
-  def foldSuccess(elem: Int)(state: State): State = 
+  def foldSuccess(state: State)(elem: Int): State = 
     state match {
       case State(None, n) => State(Some(elem), n)
       case State(Some(prev), n) if elem > prev => State(Some(elem), n+1)
       case State(_, n) => State(Some(elem), n)
     }
-  
-  def foldFailure(err: Throwable): State = State.empty
 
-  def solution(input: Stream[IO, String])(n: Int) = 
-    Files[IO]
-      .readAll(Path("./data/day1part1"))
-      .through(text.utf8.decode)
+  def solution[F[_]: Concurrent](input: Stream[F, String])(n: Int): Stream[F, State] = 
+    input
       .through(text.lines)
       .map((s: String) => Try(s.toInt).toEither)
       .sliding(n)
-      .fold(State.empty)((state, chunk) => chunk.toList.sequence.map(_.sum).fold(foldFailure, foldSuccess(_)(state)))
-      .evalMap((state: State) => IO.println(state.increaseCount))
+      .fold(State.empty)((state, chunk) => chunk.toList.sequence.map(_.sum).fold(err => State.empty, foldSuccess(state)(_)))
 
-  def fromFile(filename: String) = Files[IO].readAll(Path(filename)).through(text.utf8.decode)
-  def part1 = solution(fromFile("./data/day1part1"))(1)
-  def part2 = solution(fromFile("./data/day1part1"))(3)
-  def run   = (Stream.eval(IO.print("part1 solution: "))
-    ++ part1
-    ++ Stream.eval(IO.print("part2 solution: "))
-    ++ part2
-  ).compile.drain
+  def fromFile(filename: String) =
+    Files[IO].readAll(Path(filename)).through(text.utf8.decode)
+  
+  def output[F[_]: Console: Concurrent](input: Stream[F, State]): Stream[F, Unit] =
+    input.evalMap((state: State) => Console[F].println(state.increaseCount))
+
+  def printStream(s: String) = Stream.eval(IO.print(s))
+  def part1 = output(solution(fromFile("./data/day1"))(1))
+  def part2 = output(solution(fromFile("./data/day1"))(3))
+  def run   = (printStream("part1 solution: ") |+| part1 |+| printStream("part2 solution: ") |+| part2).compile.drain
 }
