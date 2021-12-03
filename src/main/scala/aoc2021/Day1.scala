@@ -15,7 +15,7 @@ object State {
   def empty: State = State(None, 0)
 }
 
-object Day1 extends IOApp.Simple {
+object Day1 extends AdventOfCode {
   def foldSuccess(state: State)(elem: Int): State = 
     state match {
       case State(None, n) => State(Some(elem), n)
@@ -30,14 +30,7 @@ object Day1 extends IOApp.Simple {
       .sliding(n)
       .fold(State.empty)((state, chunk) => chunk.toList.sequence.map(_.sum).fold(err => State.empty, foldSuccess(state)(_)))
 
-  def fromFile(filename: String) =
-    Files[IO].readAll(Path(filename)).through(text.utf8.decode)
-  
-  def output[F[_]: Console: Concurrent](input: Stream[F, State]): Stream[F, Unit] =
-    input.evalMap((state: State) => Console[F].println(state.increaseCount))
-
-  def printStream(s: String) = Stream.eval(IO.print(s))
-  def part1 = output(solution(fromFile("./data/day1"))(1))
-  def part2 = output(solution(fromFile("./data/day1"))(3))
-  def run   = (printStream("part1 solution: ") |+| part1 |+| printStream("part2 solution: ") |+| part2).compile.drain
+  def part1 = output[IO, State, Int](solution(fromFile("./data/day1"))(1))(_.increaseCount)
+  def part2 = output[IO, State, Int](solution(fromFile("./data/day1"))(3))(_.increaseCount)
+  def run = runSolution(part1, part2)
 }

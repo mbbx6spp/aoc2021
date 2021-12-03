@@ -21,7 +21,7 @@ object Day1Props extends Properties("Day1") {
   property("constant sequence yields increaseCount of zero for any sliding window size") =
     forAll(genWindowSize, genSizeFactor) { (windowSize: Int, sizeFactor: Int) =>
       val length = sizeFactor*windowSize
-      val constantS = Stream.constant("555").take(sizeFactor*windowSize)
+      val constantS = Stream.constant("555").take(length)
       runTest(constantS, windowSize) == Some(0)
     }
   
@@ -32,5 +32,5 @@ object Day1Props extends Properties("Day1") {
     }
   
   def runTest(stream: Stream[IO, String], windowSize: Int): Option[Int] =
-    Day1.solution(stream)(windowSize).compile.last.unsafeRunSync().map(_.increaseCount)
+    Day1.solution(stream.covary[IO])(windowSize).compile.last.unsafeRunSync().map(_.increaseCount)
 }
